@@ -23,6 +23,7 @@ jobs:
           name: https://github.com/acmesh-official/acme.sh
           ref: 3.0.7
           path: install_acme.sh
+          fetch-tags: true
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v4
