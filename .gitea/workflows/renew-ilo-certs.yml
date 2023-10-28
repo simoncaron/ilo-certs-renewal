@@ -17,25 +17,39 @@ jobs:
       - name: Check out the codebase.
         uses: actions/checkout@v3
 
+      - name: Checkout acme.sh
+        uses: actions/checkout@v3
+        with:
+          name: https://github.com/acmesh-official/acme.sh
+          ref: refs/tags/3.0.7
+          path: install_acme.sh
+
       - name: Set up Python 3.11
         uses: actions/setup-python@v4
         with:
           python-version: 3.11
       
-      - run: pip install -r requirements.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-      - run: |
-          hpilo_cli -l $ILO_USER -p $ILO_PASS $ILO_IP certificate_signing_request country= state= locality= organization= organizational_unit= common_name=$ILO_HOSTNAME || true
+      - name: Install acme.sh
+        run: |
+          cd /install_acme.sh \
+            && ([ -f /install_acme.sh/acme.sh ] \
+            && /install_acme.sh/acme.sh --install || curl https://get.acme.sh | sh) \
+            && rm -rf /install_acme.sh/
 
-          # Wait for CSR Request to Complete
-          sleep 60
+          # echo "$GITHUB_WORKSPACE/.acme.sh/acme.sh" >> $GITHUB_PATH
 
-          hpilo_cli -l $ILO_USER -p $ILO_PASS $ILO_IP certificate_signing_request country= state= locality= organization= organizational_unit= common_name=$ILO_HOSTNAME > csr_$ILO_HOSTNAME.csr
+      # - name: Create Certificate CSR
+      #   run: |
+      #     hpilo_cli -l $ILO_USER -p $ILO_PASS $ILO_IP certificate_signing_request country= state= locality= organization= organizational_unit= common_name=$ILO_HOSTNAME || true
 
-      - uses: Menci/acme@v2
-        with:
-          version: 3.0.7
-          arguments: --signcsr  --csr csr_$ILO_HOSTNAME.csr  --dns  dns_cf --server letsencrypt
+      #     # Wait for CSR Request to Complete
+      #     sleep 60
 
-      - run: |
+      #     hpilo_cli -l $ILO_USER -p $ILO_PASS $ILO_IP certificate_signing_request country= state= locality= organization= organizational_unit= common_name=$ILO_HOSTNAME > csr_$ILO_HOSTNAME.csr
+
+      - name: Upload Signed Certificate to iLO
+        run: |
           find .
