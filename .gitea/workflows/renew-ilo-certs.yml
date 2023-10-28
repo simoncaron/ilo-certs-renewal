@@ -7,8 +7,8 @@ jobs:
   renew-truenas01:
     runs-on: ubuntu-latest
     env:
-      ILO_HOSTNAME: "ilo.pve01.simn.io"
-      ILO_IP: "192.168.2.200"
+      ILO_HOSTNAME: "ilo.truenas01.simn.io"
+      ILO_IP: "192.168.2.102"
       ILO_USER: ${{ secrets.ILO_USER }}
       ILO_PASS: ${{ secrets.ILO_PASS }}
       CF_Token: ${{ secrets.CF_Token }}
