@@ -28,10 +28,8 @@ jobs:
       - name: Install acme.sh
         run: |
           git clone --depth 1 https://github.com/acmesh-official/acme.sh.git
-
           cd acme.sh && ./acme.sh --force --install -m letsencrypt@simn.io
-
-          # echo "$GITHUB_WORKSPACE/.acme.sh/acme.sh" >> $GITHUB_PATH
+          echo "/home/runner/.acme.sh/acme.sh" >> $GITHUB_PATH
 
       # - name: Create Certificate CSR
       #   run: |
