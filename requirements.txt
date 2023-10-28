@@ -1,1 +1,1 @@
-python-hpilo=4.4.3
+python-hpilo==4.4.3
