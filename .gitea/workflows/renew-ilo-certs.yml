@@ -2,6 +2,8 @@
 name: Renew iLO SSL Certificates
 'on':
   push:
+  schedule:
+    - cron: '0 12 * * *'
 
 jobs:
   renew-truenas01:
@@ -32,7 +34,7 @@ jobs:
 
       - name: Create Certificate CSR
         run: |
-          hpilo_cli -l $ILO_USER -p $ILO_PASS $ILO_IP certificate_signing_request country= state= locality= organization= organizational_unit= common_name=$ILO_HOSTNAME || true
+          hpilo_cli -l $ILO_USER -p $ILO_PASS $ILO_IP certificate_signing_request country= state= locality= organization= organizational_unit= common_name=$ILO_HOSTNAME 2>/dev/null
 
           # Wait for CSR Request to Complete
           sleep 60
