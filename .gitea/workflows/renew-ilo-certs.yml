@@ -4,8 +4,11 @@ name: Renew iLO SSL Certificates
   push:
 
 jobs:
-  renew:
+  renew-truenas01:
     runs-on: ubuntu-latest
+    env:
+      ILO_HOSTNAME: "ilo.pve01.simn.io"
+      ILO_IP: "192.168.2.200"
     steps:
       - name: Check out the codebase.
         uses: actions/checkout@v3
@@ -16,3 +19,11 @@ jobs:
           python-version: 3.11
       
       - run: pip install -r requirements.txt
+
+      - run: |
+          hpilo_cli -l $ILO_USER -p $ILO_PASS $ILO_IP certificate_signing_request country= state= locality= organization= organizational_unit= common_name=$ILO_HOSTNAME
+
+          # Wait for CSR Request to Complete
+          sleep 60
+
+          hpilo_cli -l $ILO_USER -p $ILO_PASS $ILO_IP certificate_signing_request country= state= locality= organization= organizational_unit= common_name=$ILO_HOSTNAME > csr_$ILO_HOSTNAME.csr
