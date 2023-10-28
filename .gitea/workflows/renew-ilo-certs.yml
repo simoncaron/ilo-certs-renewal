@@ -17,13 +17,6 @@ jobs:
       - name: Check out the codebase.
         uses: actions/checkout@v3
 
-      - name: Checkout acme.sh
-        uses: actions/checkout@v3
-        with:
-          repository: acmesh-official/acme.sh
-          ref: 3.0.7
-          path: install_acme.sh
-
       - name: Set up Python 3.11
         uses: actions/setup-python@v4
         with:
@@ -34,6 +27,8 @@ jobs:
 
       - name: Install acme.sh
         run: |
+          git clone https://github.com/acmesh-official/acme.sh.git /install_acme.sh/
+
           cd /install_acme.sh \
             && ([ -f /install_acme.sh/acme.sh ] \
             && /install_acme.sh/acme.sh --install || curl https://get.acme.sh | sh) \
