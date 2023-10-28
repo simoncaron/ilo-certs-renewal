@@ -1,0 +1,18 @@
+---
+name: Renew iLO SSL Certificates
+'on':
+  push:
+
+jobs:
+  renew:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+      
+      - run: pip install -r requirements.txt
