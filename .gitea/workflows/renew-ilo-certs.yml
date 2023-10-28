@@ -9,6 +9,8 @@ jobs:
     env:
       ILO_HOSTNAME: "ilo.pve01.simn.io"
       ILO_IP: "192.168.2.200"
+      ILO_USER: ${{ secrets.ILO_USER }}
+      ILO_PASS: ${{ secrets.ILO_PASS }}
     steps:
       - name: Check out the codebase.
         uses: actions/checkout@v3
