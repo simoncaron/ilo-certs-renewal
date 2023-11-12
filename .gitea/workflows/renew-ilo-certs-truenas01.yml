@@ -1,7 +1,8 @@
 ---
 name: Renew iLO SSL Certificates
 'on':
-  push:
+  schedule:
+    - cron: '0 0 1 * *'
 
 jobs:
   renew-truenas01:
@@ -21,7 +22,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: 3.11
-      
+
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
