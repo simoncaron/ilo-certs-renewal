@@ -3,6 +3,7 @@ name: Renew iLO SSL Certificates
 'on':
   schedule:
     - cron: '0 0 1 * *'
+  push:
 
 jobs:
   renew-truenas01:
