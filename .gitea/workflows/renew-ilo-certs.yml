@@ -6,7 +6,7 @@ name: Renew iLO SSL Certificates
   push:
 
 jobs:
-  server_matrix:
+  renew_certs:
     strategy:
       matrix:
         hostname: [pve01.simn.io, pve02.simn.io, pve03.simn.io, truenas01.simn.io]
