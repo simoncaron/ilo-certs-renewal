@@ -6,10 +6,12 @@ name: Renew iLO SSL Certificates
   push:
 
 jobs:
-  renew-pve03:
+  server_matrix:
+    strategy:
+      matrix:
+        hostname: [pve01.simn.io, pve02.simn.io, pve03.simn.io, truenas01.simn.io]
     runs-on: ubuntu-latest
     env:
-      ILO_HOSTNAME: "ilo.pve03.simn.io"
       ILO_USER: ${{ secrets.ILO_USER }}
       ILO_PASS: ${{ secrets.ILO_PASS }}
       CF_Token: ${{ secrets.CF_Token }}
@@ -37,17 +39,17 @@ jobs:
           retry_on: error
           timeout_minutes: 60
           command: |
-            hpilo_cli -l $ILO_USER -p $ILO_PASS $ILO_HOSTNAME certificate_signing_request country= state= locality= organization= organizational_unit= common_name=$ILO_HOSTNAME 2>/dev/null
+            hpilo_cli -l $ILO_USER -p $ILO_PASS ${{ matrix.hostname }} certificate_signing_request country= state= locality= organization= organizational_unit= common_name=${{ matrix.hostname }} 2>/dev/null
 
             # Wait for CSR Request to Complete
             sleep 60
 
-            hpilo_cli -l $ILO_USER -p $ILO_PASS $ILO_HOSTNAME certificate_signing_request country= state= locality= organization= organizational_unit= common_name=$ILO_HOSTNAME > csr_$ILO_HOSTNAME.csr
+            hpilo_cli -l $ILO_USER -p $ILO_PASS ${{ matrix.hostname }} certificate_signing_request country= state= locality= organization= organizational_unit= common_name=${{ matrix.hostname }} > csr_${{ matrix.hostname }}.csr
 
       - name: Sign Certificate with letsencrypt
-        run: bash /home/runner/.acme.sh/acme.sh --signcsr  --csr csr_$ILO_HOSTNAME.csr  --dns  dns_cf --server letsencrypt
+        run: bash /home/runner/.acme.sh/acme.sh --signcsr  --csr csr_${{ matrix.hostname }}.csr  --dns  dns_cf --server letsencrypt
 
       - name: Upload signed certificate to iLO
         run: |
-          CERTFILE="/home/runner/.acme.sh/$ILO_HOSTNAME/$ILO_HOSTNAME.cer"
-          hpilo_cli -l $ILO_USER -p $ILO_PASS $ILO_HOSTNAME import_certificate certificate="$(cat $CERTFILE)"
+          CERTFILE="/home/runner/.acme.sh/${{ matrix.hostname }}/${{ matrix.hostname }}.cer"
+          hpilo_cli -l $ILO_USER -p $ILO_PASS ${{ matrix.hostname }} import_certificate certificate="$(cat $CERTFILE)"
