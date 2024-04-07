@@ -9,7 +9,7 @@ jobs:
   renew_certs:
     strategy:
       matrix:
-        hostname: [pve01.simn.io, pve02.simn.io, pve03.simn.io, truenas01.simn.io]
+        hostname: [pve01.simn.io, truenas01.simn.io]
     runs-on: ubuntu-latest
     env:
       ILO_USER: ${{ secrets.ILO_USER }}
