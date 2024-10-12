@@ -51,5 +51,5 @@ jobs:
 
       - name: Upload signed certificate to iLO
         run: |
-          CERTFILE="/home/runner/.acme.sh/${{ matrix.hostname }}/${{ matrix.hostname }}.cer"
+          CERTFILE="$HOME/.acme.sh/${{ matrix.hostname }}/${{ matrix.hostname }}.cer"
           hpilo_cli -l $ILO_USER -p $ILO_PASS ${{ matrix.hostname }} import_certificate certificate="$(cat $CERTFILE)"
